@@ -16,7 +16,7 @@ RUN apk add --no-cache \
     php84-session \
     php84-fileinfo
 
-RUN ln -s /usr/bin/php84 /usr/bin/php
+RUN ln -sf /usr/bin/php84 /usr/bin/php
 
 COPY . .
 RUN npm install && npm run build
