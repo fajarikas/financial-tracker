@@ -15,6 +15,7 @@ RUN apk add --no-cache \
     php84-curl \
     php84-session \
     php84-fileinfo \
+    php84-iconv \
     curl
 
 RUN ln -sf /usr/bin/php84 /usr/bin/php
@@ -36,7 +37,8 @@ RUN apk add --no-cache \
     icu-dev \
     linux-headers \
     curl \
-    mysql-client
+    mysql-client \
+    php84-iconv
 
 RUN docker-php-ext-install pdo_mysql gd zip intl opcache
 
