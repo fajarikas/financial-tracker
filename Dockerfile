@@ -12,7 +12,9 @@ RUN apt-get update && apt-get install -y \
     nginx \
     libzip-dev \
     libpq-dev \
-    libicu-dev
+    libicu-dev \
+    mysql-client \
+    iputils-ping
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*

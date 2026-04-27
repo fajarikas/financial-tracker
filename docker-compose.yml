@@ -4,18 +4,18 @@ services:
       context: .
       dockerfile: Dockerfile
     image: financial-tracker-app
-    container_name: financial-tracker-web
     restart: unless-stopped
     ports:
       - "8082:80"
     depends_on:
+      - db
+    links:
       - db
     env_file:
       - .env
 
   db:
     image: mysql:8.0
-    container_name: financial-tracker-db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE:-finance_tracker}
