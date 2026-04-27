@@ -1,5 +1,5 @@
 services:
-  financial-app:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,13 +9,11 @@ services:
     ports:
       - "8082:80"
     depends_on:
-      - financial-db
+      - db
     env_file:
       - .env
-    networks:
-      - financial-bridge
 
-  financial-db:
+  db:
     image: mysql:8.0
     container_name: financial-tracker-db
     restart: unless-stopped
@@ -28,12 +26,6 @@ services:
       - "33061:3306"
     volumes:
       - financial-db-data:/var/lib/mysql
-    networks:
-      - financial-bridge
-
-networks:
-  financial-bridge:
-    driver: bridge
 
 volumes:
   financial-db-data:
