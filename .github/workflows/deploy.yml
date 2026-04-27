@@ -46,27 +46,16 @@ jobs:
             git fetch --all
             git reset --hard origin/main
 
-            # Build image
-            docker build --network=host -t financial-tracker .
-            
-            # Remove old container
-            docker rm -f financial-tracker-web || true
-            
-            # Run new container
-            docker run -d \
-              -p 8082:80 \
-              --name financial-tracker-web \
-              --env-file .env \
-              -v $(pwd)/storage:/var/www/storage \
-              financial-tracker
+            # Build and Restart everything with one command
+            docker-compose up -d --build
 
             # Post-deployment
-            docker exec financial-tracker-web php artisan migrate --force
-            docker exec financial-tracker-web php artisan config:cache
-            docker exec financial-tracker-web php artisan route:cache
-            docker exec financial-tracker-web php artisan view:cache
-            docker exec financial-tracker-web php artisan storage:link
+            docker-compose exec -T app php artisan migrate --force
+            docker-compose exec -T app php artisan config:cache
+            docker-compose exec -T app php artisan route:cache
+            docker-compose exec -T app php artisan view:cache
+            docker-compose exec -T app php artisan storage:link
 
             # Fix Permissions
-            docker exec -u root financial-tracker-web chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-            docker exec -u root financial-tracker-web chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+            docker-compose exec -T -u root app chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+            docker-compose exec -T -u root app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
