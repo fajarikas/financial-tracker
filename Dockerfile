@@ -19,6 +19,10 @@ RUN apt-get update && apt-get install -y \
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# ✅ Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl
 
@@ -33,6 +37,9 @@ COPY . /var/www
 
 # Install PHP dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
+
+# ✅ Install Node dependencies & build Vite assets
+RUN npm install && npm run build && rm -rf node_modules
 
 # Copy Nginx Configuration
 COPY docker/nginx.conf /etc/nginx/sites-available/default
