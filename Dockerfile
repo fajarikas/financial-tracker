@@ -27,22 +27,34 @@ COPY . .
 
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 RUN npm install && npm run build
-
 FROM php:8.4-fpm-alpine
 
 RUN apk add --no-cache \
     nginx \
     supervisor \
-    libpng-dev \
-    libzip-dev \
-    oniguruma-dev \
-    icu-dev \
-    linux-headers \
     curl \
     mysql-client \
-    php84-iconv
+    php84-pdo \
+    php84-pdo_mysql \
+    php84-gd \
+    php84-zip \
+    php84-intl \
+    php84-opcache \
+    php84-iconv \
+    php84-mbstring \
+    php84-session \
+    php84-fileinfo \
+    php84-xml \
+    php84-xmlwriter \
+    php84-dom \
+    php84-tokenizer \
+    php84-ctype \
+    php84-bcmath \
+    php84-openssl \
+    php84-phar \
+    php84-curl
 
-RUN docker-php-ext-install pdo_mysql gd zip intl opcache
+RUN ln -sf /usr/bin/php84 /usr/bin/php
 
 WORKDIR /var/www/html
 
