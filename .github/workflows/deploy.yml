@@ -25,9 +25,6 @@ jobs:
       - name: Generate Key
         run: php artisan key:generate
 
-      - name: Build Assets
-        run: npm install && npm run build
-
       - name: Run Tests
         run: ./vendor/bin/pest
 
@@ -53,23 +50,23 @@ jobs:
             docker build --network=host -t financial-tracker .
             
             # Remove old container
-            docker rm -f financial-tracker-app || true
+            docker rm -f financial-tracker-web || true
             
             # Run new container
             docker run -d \
               -p 8082:80 \
-              --name financial-tracker-app \
+              --name financial-tracker-web \
               --env-file .env \
-              -v $(pwd)/storage:/var/www/html/storage \
+              -v $(pwd)/storage:/var/www/storage \
               financial-tracker
 
             # Post-deployment
-            docker exec financial-tracker-app php artisan migrate --force
-            docker exec financial-tracker-app php artisan config:cache
-            docker exec financial-tracker-app php artisan route:cache
-            docker exec financial-tracker-app php artisan view:cache
-            docker exec financial-tracker-app php artisan storage:link
+            docker exec financial-tracker-web php artisan migrate --force
+            docker exec financial-tracker-web php artisan config:cache
+            docker exec financial-tracker-web php artisan route:cache
+            docker exec financial-tracker-web php artisan view:cache
+            docker exec financial-tracker-web php artisan storage:link
 
             # Fix Permissions
-            docker exec -u root financial-tracker-app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-            docker exec -u root financial-tracker-app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+            docker exec -u root financial-tracker-web chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+            docker exec -u root financial-tracker-web chmod -R 775 /var/www/storage /var/www/bootstrap/cache

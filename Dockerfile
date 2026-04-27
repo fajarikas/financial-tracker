@@ -1,57 +1,48 @@
-FROM node:22-alpine AS frontend-builder
-WORKDIR /app
+FROM php:8.4-fpm
 
-RUN apk add --no-cache \
-    php84 \
-    php84-phar \
-    php84-mbstring \
-    php84-openssl \
-    php84-json \
-    php84-dom \
-    php84-xml \
-    php84-xmlwriter \
-    php84-tokenizer \
-    php84-ctype \
-    php84-curl \
-    php84-session \
-    php84-fileinfo \
-    php84-iconv \
-    php84-pdo \
-    php84-pdo_mysql \
-    curl
-
-RUN ln -sf /usr/bin/php84 /usr/bin/php
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-COPY . .
-
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-RUN npm install && npm run build
-
-FROM php:8.4-fpm-alpine
-
-RUN apk add --no-cache \
-    nginx \
-    supervisor \
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
     curl \
-    mysql-client \
     libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    nginx \
     libzip-dev \
-    oniguruma-dev \
-    icu-dev \
-    linux-headers
+    libpq-dev \
+    libicu-dev
 
-RUN docker-php-ext-install pdo_mysql gd zip intl opcache bcmath
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /var/www/html
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl
 
-COPY --from=frontend-builder /app .
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN chown -R www-data:www-data storage bootstrap/cache
+# Set working directory
+WORKDIR /var/www
 
-COPY .docker/nginx.conf /etc/nginx/http.d/default.conf
-COPY .docker/supervisord.conf /etc/supervisord.conf
+# Copy application contents
+COPY . /var/www
 
+# Install PHP dependencies
+RUN composer install --no-interaction --optimize-autoloader --no-dev
+
+# Copy Nginx Configuration
+COPY docker/nginx.conf /etc/nginx/sites-available/default
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+# Expose port
 EXPOSE 80
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+# Start script
+COPY docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+CMD ["/usr/local/bin/start.sh"]
