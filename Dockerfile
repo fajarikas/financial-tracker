@@ -16,6 +16,8 @@ RUN apk add --no-cache \
     php84-session \
     php84-fileinfo \
     php84-iconv \
+    php84-pdo \
+    php84-pdo_mysql \
     curl
 
 RUN ln -sf /usr/bin/php84 /usr/bin/php
