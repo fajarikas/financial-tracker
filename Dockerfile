@@ -1,8 +1,8 @@
-# Stage 1: Build Frontend
+# Stage 1: Build Frontend + Prepare Composer for Wayfinder
 FROM node:22-alpine AS frontend-builder
 WORKDIR /app
 
-# Install PHP in node stage so Wayfinder can generate routes during build
+# Install PHP & Composer in node stage
 RUN apk add --no-cache \
     php84 \
     php84-phar \
@@ -16,12 +16,16 @@ RUN apk add --no-cache \
     php84-ctype \
     php84-curl \
     php84-session \
-    php84-fileinfo
+    php84-fileinfo \
+    curl
 
-# Force symlink even if exists
 RUN ln -sf /usr/bin/php84 /usr/bin/php
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY . .
+
+# Run composer install FIRST so Wayfinder can run during npm build
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 RUN npm install && npm run build
 
 # Stage 2: Runtime Backend
@@ -44,13 +48,8 @@ RUN docker-php-ext-install pdo_mysql gd zip intl opcache
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy project files
-COPY . .
-COPY --from=frontend-builder /app/public/build ./public/build
-
-# Install Composer dependencies
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+# Copy project files from stage 1
+COPY --from=frontend-builder /app .
 
 # Setup Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
