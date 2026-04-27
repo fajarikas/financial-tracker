@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { Plus, Pencil, Trash2, CreditCard, Banknote, WalletCards } from 'lucide-react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { 
@@ -72,6 +72,7 @@ export default function Wallets({ wallets }: WalletsProps) {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
+
         if (editingWallet) {
             put(update.url(editingWallet.id), {
                 onSuccess: () => {

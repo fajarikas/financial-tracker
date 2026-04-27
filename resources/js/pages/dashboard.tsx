@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import {
     Wallet as WalletIcon,
     ArrowUpCircle,
@@ -14,9 +13,10 @@ import {
     Pencil,
     Trash2,
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -24,6 +24,12 @@ import {
     DialogTitle,
     DialogFooter,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -33,12 +39,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { dashboard as dashboardRoute } from '@/routes';
 import {
     store,
@@ -109,9 +109,15 @@ export default function Dashboard({
     const openCreateDialog = () => {
         setEditingTransaction(null);
         reset();
-        if (wallets.length > 0) setData('wallet_id', wallets[0].id.toString());
-        if (categories.length > 0)
+
+        if (wallets.length > 0) {
+            setData('wallet_id', wallets[0].id.toString());
+        }
+
+        if (categories.length > 0) {
             setData('category_id', categories[0].id.toString());
+        }
+
         clearErrors();
         setIsDialogOpen(true);
     };
@@ -131,6 +137,7 @@ export default function Dashboard({
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
+
         if (editingTransaction) {
             put(update.url(editingTransaction.id), {
                 onSuccess: () => {

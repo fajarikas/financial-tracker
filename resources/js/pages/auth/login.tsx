@@ -85,7 +85,7 @@ export default function Login({
 
                             <Button
                                 type="submit"
-                                className="mt-4 w-full"
+                                className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
@@ -94,15 +94,17 @@ export default function Login({
                                 Log in
                             </Button>
 
-                            <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                                <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                            <div className="relative flex items-center py-2">
+                                <div className="grow border-t border-slate-200 dark:border-slate-800"></div>
+                                <span className="mx-4 shrink text-xs text-slate-400 uppercase tracking-widest font-bold">
                                     Or continue with
                                 </span>
+                                <div className="grow border-t border-slate-200 dark:border-slate-800"></div>
                             </div>
 
                             <Button
                                 variant="outline"
-                                className="w-full"
+                                className="w-full border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900"
                                 asChild
                             >
                                 <a href={google.url()}>

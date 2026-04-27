@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { Plus, Pencil, Trash2, Tag } from 'lucide-react';
+import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { 
     Dialog, 
     DialogContent, 
@@ -59,6 +59,7 @@ export default function Categories({ categories }: CategoriesProps) {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
+
         if (editingCategory) {
             put(update.url(editingCategory.id), {
                 onSuccess: () => {

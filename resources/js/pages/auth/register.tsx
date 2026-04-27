@@ -7,8 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { login } from '@/routes';
-import { store } from '@/routes/register';
 import { google } from '@/routes/auth';
+import { store } from '@/routes/register';
 
 export default function Register() {
     return (
@@ -87,7 +87,7 @@ export default function Register() {
 
                             <Button
                                 type="submit"
-                                className="mt-2 w-full"
+                                className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
                                 tabIndex={5}
                                 data-test="register-user-button"
                             >
@@ -95,9 +95,17 @@ export default function Register() {
                                 Create account
                             </Button>
 
+                            <div className="relative flex items-center py-2">
+                                <div className="grow border-t border-slate-200 dark:border-slate-800"></div>
+                                <span className="mx-4 shrink text-xs text-slate-400 uppercase tracking-widest font-bold">
+                                    Or continue with
+                                </span>
+                                <div className="grow border-t border-slate-200 dark:border-slate-800"></div>
+                            </div>
+
                             <Button
                                 variant="outline"
-                                className="w-full"
+                                className="w-full border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900"
                                 asChild
                             >
                                 <a href={google.url()}>
