@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libpq-dev \
     libicu-dev \
-    mysql-client \
+    default-mysql-client \
     iputils-ping
 
 # Clear cache
