@@ -36,6 +36,7 @@ RUN apk add --no-cache \
     mysql-client \
     php84-pdo \
     php84-pdo_mysql \
+    php84-mysqlnd \
     php84-gd \
     php84-zip \
     php84-intl \
