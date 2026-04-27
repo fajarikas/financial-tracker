@@ -46,7 +46,7 @@ jobs:
             git fetch --all
             git reset --hard origin/main
 
-            # Build and Restart everything with one command
+            # Build and Restart app
             docker-compose up -d --build
 
             # Post-deployment
